@@ -2,11 +2,22 @@ import { Vector3, Quaternion } from "@babylonjs/core";
 
 import { SceneData } from "./interfaces";
 
-
 // rotate box
 let boxAngle: number = 0.3;
-let boxSpeed: number = 0.01
+let boxSpeed: number = 0.01;
 
+// move light in ellipse and cycle luma
+let lightAngle: number = 0;
+let lightSpeed: number = 0.005;
+const lightXpos: number = 1;
+const lightZpos: number = 5;
+
+// vertical oscilation of meshes
+let verticalSpeed: number = 0.006;
+let verticalAngle: number = 0;
+let verticalRangeY: number = 0.3;
+let boxPositionY: number = 4;
+let spherePositionY: number = 1.5;
 
 export default function createRunScene(runScene: SceneData) {
   runScene.scene.onAfterRenderObservable.add(() => {
@@ -19,5 +30,6 @@ export default function createRunScene(runScene: SceneData) {
     runScene.box!.rotationQuaternion = quat;
     boxAngle += boxSpeed;
     boxAngle %= 1;
-  })
+
+  });
 }
