@@ -1,8 +1,14 @@
+import {
+  AbstractMesh,
+  ActionManager,
+  CubeTexture,
+  Mesh,
+  Skeleton,
+  _ENVTextureLoader,
+} from "@babylonjs/core";
 
-
-
-import { AbstractMesh, ActionManager, CubeTexture } from "@babylonjs/core";
 import { SceneData } from "./interfaces";
+
 import {
   keyActionManager,
   keyDownMap,
@@ -10,7 +16,25 @@ import {
   getKeyDown,
 } from "./keyActionManager";
 
+import { characterActionManager } from "./characterActionManager";
+
+import {
+  bakedAnimations,
+  walk,
+  idle,
+  getAnimating,
+  toggleAnimating,
+} from "./bakedAnimations";
+
+import "@babylonjs/core/Materials/Textures/Loaders/envTextureLoader";
+import "@babylonjs/core/Helpers/sceneHelpers";
+
+// havok physics collisions
+import { collisionDeclaration } from "./collisionDeclaration";
+
 export default function createRunScene(runScene: SceneData) {
+  
+  collisionDeclaration(runScene);
   runScene.scene.actionManager = new ActionManager(runScene.scene);
   keyActionManager(runScene.scene);
 
@@ -24,39 +48,66 @@ export default function createRunScene(runScene: SceneData) {
     10000,
     0.1
   );
-    if (getKeyDown() == 1 && (keyDownMap["0"] || keyDownMap["0"])) {
+
+
+  // add baked in animations to player
+  runScene.player.then((result) => {
+    let skeleton: Skeleton = result!.skeletons[0];
+    bakedAnimations(runScene.scene, skeleton);
+  });
+
+  runScene.scene.onBeforeRenderObservable.add(() => {
+    // check and respond to keypad presses
+
+    if (getKeyDown() == 1 && (keyDownMap["m"] || keyDownMap["M"])) {
       keyDownHeld();
 
     }
 
-
     runScene.player.then((result) => {
+      let characterMoving: Boolean = false;
       let character: AbstractMesh = result!.meshes[0];
       if (keyDownMap["w"] || keyDownMap["ArrowUp"]) {
         character.position.x -= 0.1;
         character.rotation.y = (3 * Math.PI) / 2;
+        characterMoving = true;
       }
       if (keyDownMap["a"] || keyDownMap["ArrowLeft"]) {
         character.position.z -= 0.1;
         character.rotation.y = (2 * Math.PI) / 2;
+        characterMoving = true;
       }
       if (keyDownMap["s"] || keyDownMap["ArrowDown"]) {
         character.position.x += 0.1;
         character.rotation.y = (1 * Math.PI) / 2;
+        characterMoving = true;
       }
       if (keyDownMap["d"] || keyDownMap["ArrowRight"]) {
         character.position.z += 0.1;
         character.rotation.y = (0 * Math.PI) / 2;
+        characterMoving = true;
+      }
+
+      if (getKeyDown() && characterMoving) {
+        if (!getAnimating()) {
+          walk();
+          toggleAnimating();
+        }
+      } else {
+        if (getAnimating()) {
+          idle();
+          toggleAnimating();
+        }
       }
     });
-  
+  });
 
+  // add incremental action to player
+  runScene.player.then((result) => {
+    let characterMesh = result!.meshes[0];
+    characterActionManager(runScene.scene, characterMesh as Mesh);
+  });
 
   runScene.scene.onAfterRenderObservable.add(() => {});
-
-
-
 }
-
-
 

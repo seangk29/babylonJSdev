@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+   "collision03build": "vite build element3",
+    "collision03preview": "vite preview element3 --host"
   },
   "devDependencies": {
     "typescript": "~5.9.3",

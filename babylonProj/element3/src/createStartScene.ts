@@ -1,4 +1,4 @@
-import { SceneData } from "./interfaces";
+  import { SceneData } from "./interfaces";
 
 import {
   Scene,
@@ -13,14 +13,15 @@ import {
   SceneLoader,
   AbstractMesh,
   ISceneLoaderAsyncResult,
-  Sound
+  AnimationPropertiesOverride
 } from "@babylonjs/core";
+
 
 function createGround(scene: Scene) {
   const groundMaterial = new StandardMaterial("groundMaterial");
   const groundTexture = new Texture("./assets/textures/wood.jpg");
-  groundTexture.uScale  = 4.0; //Repeat 4 times on the Vertical Axes
-  groundTexture.vScale  = 4.0; //Repeat 4 times on the Horizontal Axes
+  groundTexture.uScale  = 4.0; //Repeat 5 times on the Vertical Axes
+  groundTexture.vScale  = 4.0; //Repeat 5 times on the Horizontal Axes
   groundMaterial.diffuseTexture = groundTexture;
  // groundMaterial.diffuseTexture = new Texture("./assets/textures/wood.jpg");
   groundMaterial.diffuseTexture.hasAlpha = true;
@@ -35,6 +36,8 @@ function createGround(scene: Scene) {
   ground.material = groundMaterial;
   return ground;
 }
+
+
 
 function createHemisphericLight(scene: Scene) {
   const light = new HemisphericLight(
@@ -73,6 +76,39 @@ function createArcRotateCamera(scene: Scene) {
   return camera;
 }
 
+function createBox1(scene: Scene) {
+  let box = MeshBuilder.CreateBox("box", { width: 1, height: 1 }, scene);
+  box.position.x = -1;
+  box.position.y = 4;
+  box.position.z = 1;
+
+  var texture = new StandardMaterial("reflective", scene);
+  texture.ambientTexture = new Texture(
+    "./assets/textures/reflectivity.png",
+    scene
+  );
+  texture.diffuseColor = new Color3(1, 1, 1);
+  box.material = texture;
+  return box;
+}
+
+function createBox2(scene: Scene) {
+  let box = MeshBuilder.CreateBox("box", { width: 1, height: 1 }, scene);
+  box.position.x = -0.7;
+  box.position.y = 8;
+  box.position.z = 1;
+
+  var texture = new StandardMaterial("reflective", scene);
+  texture.ambientTexture = new Texture(
+    "./assets/textures/reflectivity.png",
+    scene
+  );
+  texture.diffuseColor = new Color3(1, 1, 1);
+  box.material = texture;
+  return box;
+}
+
+
 function importMeshA(scene: Scene, x: number, y: number) {
   let item: Promise<void | ISceneLoaderAsyncResult> =
     SceneLoader.ImportMeshAsync(
@@ -94,20 +130,23 @@ function importMeshA(scene: Scene, x: number, y: number) {
 
 export default function createStartScene(engine: Engine) {
   let scene = new Scene(engine);
-  //let audio = backgroundMusic(scene);
+
   let lightHemispheric = createHemisphericLight(scene);
   let camera = createArcRotateCamera(scene);
+  let box1 = createBox1(scene);
+  let box2 = createBox2(scene);
   let player = importMeshA(scene, 0, 0);
   let ground = createGround(scene);
 
   let that: SceneData = {
     scene,
-  
+   
     lightHemispheric,
     camera,
+    box1,
+    box2,
     player,
     ground,
   };
   return that;
 }
-
