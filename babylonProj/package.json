@@ -5,8 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    
    "collision03build": "vite build element3",
-    "collision03preview": "vite preview element3 --host"
+    "collision03preview": "vite preview element3 --host",
+
+    "meshes01": "vite build meshes01",
+    "meshes01preview": "vite preview meshes01 --host",
+
+    "player04": "vite build player04",
+    "player04preview": "vite preview player04 --host",
+
+    "element5": "vite build element5",
+    "element5preview": "vite preview element5 --host",
+
+    "village": "vite build village",
+    "villagepreview": "vite preview village --host"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
